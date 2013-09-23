@@ -1,0 +1,1 @@
+localStorage.setItem("call", "rgauthier@mozilla.com");

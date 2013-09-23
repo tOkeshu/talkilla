@@ -66,6 +66,32 @@ var Server = (function() {
     }.bind(this));
   };
 
+  Server.prototype.anoconnect = function() {
+    this.http.post("/anostream", {}, function(err, response) {
+      if (err)
+        return this.trigger("disconnected", response);
+
+      this.trigger("connected");
+      this._anoLongPolling(JSON.parse(response));
+    }.bind(this));
+  };
+
+  Server.prototype._anoLongPolling = function(events) {
+    events.forEach(function(event) {
+      for (var type in event) {
+        this.trigger("message", type, event[type]);
+        this.trigger("message:" + type, event[type]);
+      }
+    }.bind(this));
+
+    this.http.post("/anostream", {}, function(err, response) {
+      if (err)
+        return this.trigger("disconnected", response);
+
+      this._anoLongPolling(JSON.parse(response));
+    }.bind(this));
+  };
+
   Server.prototype._longPolling = function(nick, events) {
     events.forEach(function(event) {
       for (var type in event) {

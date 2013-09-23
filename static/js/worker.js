@@ -540,6 +540,11 @@ var handlers = {
    */
   'talkilla.call-hangup': function (event) {
     server.callHangup(event.data, _currentUserData.userName);
+  },
+
+  'talkilla.anonymous-stream': function(event) {
+    _currentUserData = {userName: "ano"};
+    server.anoconnect();
   }
 };
 

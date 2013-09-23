@@ -80,6 +80,7 @@ api = {
   stream: function(req, res) {
     var nick = req.body.nick;
     var user = users.get(nick);
+
     if (!user)
       return res.send(400, JSON.stringify({}));
 
@@ -87,12 +88,20 @@ api = {
     if (!user.present()) {
       var presentUsers = users.present();
       var userList = users.toJSON(presentUsers);
-      user.send({users: presentUsers});
+      user.touch().send({users: presentUsers});
       presentUsers.forEach(function(user) {
         user.send({userJoined: nick});
       });
       logger.info({type: "connection"});
     }
+
+    user.touch().waitForEvents(function(events) {
+      res.send(200, JSON.stringify(events));
+    });
+  },
+
+  anostream: function(req, res) {
+    var user = users.add("ano").get("ano");
 
     user.touch().waitForEvents(function(events) {
       res.send(200, JSON.stringify(events));
@@ -157,6 +166,7 @@ api = {
 app.post('/signin', api.signin);
 app.post('/signout', api.signout);
 app.post('/stream', api.stream);
+app.post('/anostream', api.anostream);
 app.post('/calloffer', api.callOffer);
 app.post('/callaccepted', api.callAccepted);
 app.post('/callhangup', api.callHangup);

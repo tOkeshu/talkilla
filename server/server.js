@@ -39,6 +39,9 @@ var api = {
 };
 
 app.get('/config.json', api.config);
+app.get('/room/:user', function(req, res) {
+   res.sendfile('static/room.html');
+});
 
 app.start = function(serverPort, callback) {
   app.set('users', {});

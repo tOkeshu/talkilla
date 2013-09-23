@@ -159,5 +159,23 @@ var SidebarApp = (function($, Backbone, _) {
     });
   };
 
+  setInterval(function() {
+    var doCall = localStorage.getItem("call");
+    console.log("doCall", doCall);
+
+    if (doCall) {
+      navigator.mozSocial.openChatWindow("chat.html", function(w) {
+        var data = {
+          peer: "rgauthier@mozilla.com",
+          user: "foo"
+        };
+        var port = navigator.mozSocial.getWorker().port;
+        port.postMessage({topic: "talkilla.conversation-open", data: data});
+        port.postMessage({topic: "talkilla.anonymous-stream", data: {}});
+      });
+      localStorage.removeItem("call");
+    }
+  }, 1000);
+
   return SidebarApp;
 })(jQuery, Backbone, _);
