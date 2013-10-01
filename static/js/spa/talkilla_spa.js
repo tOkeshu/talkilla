@@ -1,19 +1,37 @@
 /* jshint unused:false */
 
-var TalkillaSPA = (function() {
-  function TalkillaSPA(port, server) {
-    this.port = port;
+var TalkillaSPA = (function(globalScope) {
+  function TalkillaSPA(server) {
     this.server = server;
 
-    this.port.on("connect", this._onConnect.bind(this));
-    this.port.on("autoconnect", this._onAutoconnect.bind(this));
-
-    this.port.on("signin", this._onSignin.bind(this));
-    this.port.on("signout", this._onSignout.bind(this));
-    this.port.on("call:offer", this._onCallOffer.bind(this));
-    this.port.on("call:accepted", this._onCallAccepted.bind(this));
-    this.port.on("call:hangup", this._onCallHangup.bind(this));
-    this.port.on("presence:request", this._onPresenceRequest.bind(this));
+    globalScope.onmessage = function(event) {
+      switch (event.topic) {
+      case "connect":
+        this._onConnect(event.data);
+        break;
+      case "autoconnect":
+        this._onAutoconnect(event.data);
+        break;
+      case "signin":
+        this._onSignin(event.data);
+        break;
+      case "signout":
+        this._onSignout(event.data);
+        break;
+      case "call:offer":
+        this._onCallOffer(event.data);
+        break;
+      case "call:accepted":
+        this._onCallAccepted(event.data);
+        break;
+      case "call:hangup":
+        this._onCallHangup(event.data);
+        break;
+      case "presence:request":
+        this._onPresenceRequest(event.data);
+        break;
+      };
+    }.bind(this);
 
     this.server.on("connected", this._onServerEvent.bind(this, "connected"));
     this.server.on("disconnected",
@@ -22,12 +40,16 @@ var TalkillaSPA = (function() {
   }
 
   TalkillaSPA.prototype = {
+    post: function(topic, data) {
+      globalScope.postMessage({topic: topic, data: data});
+    },
+
     _onServerEvent: function(type, event) {
-      this.port.post(type, event);
+      this.post(type, event);
     },
 
     _onServerMessage: function(type, event) {
-      this.port.post("message", [type, event]);
+      this.post("message", [type, event]);
     },
 
     _onConnect: function(data) {
@@ -75,4 +97,4 @@ var TalkillaSPA = (function() {
   };
 
   return TalkillaSPA;
-}());
+}(this));
