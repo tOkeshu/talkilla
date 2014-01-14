@@ -301,6 +301,7 @@
     initialize: function() {
       this.user.on('signin signout', this.render, this);
       this.appStatus.on('change:workerInitialized', this.render, this);
+      this._linkShareView = new app.views.LinkShareView();
     },
 
     render: function() {
@@ -322,6 +323,7 @@
         this.$('#signout').show().find('.username')
             .text(this.user.get('username'));
       }
+      this._linkShareView.render();
       return this;
     },
 
@@ -340,7 +342,12 @@
     el: "#link-share",
 
     render: function() {
-      this.$el.append('<input type="text">');
+
+      this.$el.html(
+        '<div id="#link-share">' +
+        '  <input class="link-share-input" type="text">' +
+        '</div>');
+      return this;
     }
   });
 
