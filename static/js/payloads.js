@@ -261,6 +261,29 @@ var payloads = (function() {
     }
   };
 
+  /**
+   * InstantShare payload. A ping payload to trigger a call in an
+   * instant-share session.
+   *
+   * @param {Object} data
+   *
+   * data attributes:
+   *
+   * - {String} peer, the user to call
+   *
+   */
+  function InstantShare(data) {
+    this.peer = data.peer;
+  }
+
+  InstantShare.prototype = {
+    toJSON: function() {
+      return {
+        peer: this.peer
+      };
+    }
+  };
+
   return {
     Offer: Offer,
     Answer: Answer,
@@ -271,6 +294,7 @@ var payloads = (function() {
     SPASpec: SPASpec,
     Move: Move,
     MoveAccept: MoveAccept,
-    SPAChannelMessage: SPAChannelMessage
+    SPAChannelMessage: SPAChannelMessage,
+    InstantShare: InstantShare
   };
 })();
