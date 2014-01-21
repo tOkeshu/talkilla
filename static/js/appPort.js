@@ -5,7 +5,10 @@
   "use strict";
 
   function AppPort() {
-    this._port = navigator.mozSocial.getWorker().port;
+    if (navigator.mozSocial)
+      this._port = navigator.mozSocial.getWorker().port;
+    else
+      this._port = new Worker("/js/tabWorker.js");
 
     this._port.onmessage = function(event) {
       this.trigger(event.data.topic, event.data.data);

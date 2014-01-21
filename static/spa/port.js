@@ -13,6 +13,10 @@ var SPAPort = (function(globalScope) {
       globalScope.postMessage({topic: topic, data: data});
     },
 
+    postEvent: function(topic, data) {
+      this.post(topic, data);
+    },
+
     _onMessage: function(event) {
       this.trigger(event.data.topic, event.data.data);
     }

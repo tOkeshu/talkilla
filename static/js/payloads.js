@@ -131,7 +131,7 @@ var payloads = (function() {
    */
   var IceCandidate = Payload.define({
     peer:      String,
-    candidate: [Object, null]
+    candidate: [null, Object]
   });
 
   /**

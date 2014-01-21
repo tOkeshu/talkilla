@@ -102,6 +102,7 @@
       this.state.start();
 
       this.media.once("offer-ready", function(offer) {
+        offer = JSON.parse(JSON.stringify(offer));
         this.trigger("send-offer", new app.payloads.Offer({
           peer: this.peer.get("username"),
           offer: offer,
